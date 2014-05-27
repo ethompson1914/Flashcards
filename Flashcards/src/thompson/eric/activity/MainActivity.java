@@ -1,18 +1,25 @@
 package thompson.eric.activity;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Map;
 
+import thompson.eric.factories.QuestionSetFactoryImpl;
 import thompson.eric.flashcards.R;
 import thompson.eric.question.Question;
 import thompson.eric.set.QuestionSet;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,15 +30,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 	
-	private ListView mainListView ;
-	private ArrayAdapter<String> listAdapter ;
+	private ListView mainListView;
+	private ArrayAdapter<String> listAdapter;
+	private QuestionSetFactoryImpl factory; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		factory = new QuestionSetFactoryImpl();
 
 		// Find the ListView resource. 
 		mainListView = (ListView) findViewById(R.id.mainlistview);
@@ -50,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 		
 		final ArrayList<QuestionSet> questionSets = new ArrayList<QuestionSet>();
+		questionSets.add(factory.createBlankQuestionSet());
 		
 		final ArrayList<String> questionSetNames = new ArrayList<String>();
 		questionSetNames.add("Create New Set...");
@@ -69,21 +79,16 @@ public class MainActivity extends ActionBarActivity {
 					startActivity(intent);
 				} else {
 					// Anything else was clicked
-					Bundle b = new Bundle();
-					ArrayList<Question> questions = new ArrayList<Question>();
-					questions = questionSets.get(position).getAllQuestions();
-					b.putStringArray("HL", new String[] { exercises.get(0), exercises.get(1), exercises.get(2), exercises.get(3) });
-					Intent intent = new Intent(MainActivity.this, WorkoutActivity.class);
-					intent.putExtras(b);
+					//Bundle b = new Bundle();
+					//ArrayList<Question> questions = new ArrayList<Question>();
+					//questions = questionSets.get(position).getAllQuestions();
+					//b.putParcelableArrayList(questionSetNames.get(position), questionSets.get(position).getAllQuestions());
+					Intent intent = new Intent(MainActivity.this, StudyActivity.class);
+					intent.putExtra("QuestionSet", questionSets.get(position).getAllQuestions());
 					startActivity(intent);
 				}                 
 			}
-		});     
-
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
-		}
+		});
 	}
 
 	@Override
@@ -122,5 +127,59 @@ public class MainActivity extends ActionBarActivity {
 			return rootView;
 		}
 	}
+	
+	public void fillQuestionSets() {
+		
+	}
+	
+    public static void writeObjectToFile(Context context, Object object, String filename) {
 
+        ObjectOutputStream objectOut = null;
+        try {
+            FileOutputStream fileOut = context.openFileOutput(filename, Activity.MODE_PRIVATE);
+            objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(object);
+            fileOut.getFD().sync();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (objectOut != null) {
+                try {
+                    objectOut.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+        }
+    }
+    
+    public static Object readObjectFromFile(Context context, String filename) {
+
+        ObjectInputStream objectIn = null;
+        Object object = null;
+        try {
+
+            FileInputStream fileIn = context.getApplicationContext().openFileInput(filename);
+            objectIn = new ObjectInputStream(fileIn);
+            object = objectIn.readObject();
+
+        } catch (FileNotFoundException e) {
+            // Do nothing
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (objectIn != null) {
+                try {
+                    objectIn.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
+        }
+
+        return object;
+    }
 }

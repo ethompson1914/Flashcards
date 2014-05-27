@@ -1,11 +1,12 @@
 package thompson.eric.set;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
 import thompson.eric.question.Question;
 
-public class QuestionSet {
+public class QuestionSet implements Serializable {
 	
 	private ArrayList<Question> questions;
 	private String name;
@@ -42,9 +43,4 @@ public class QuestionSet {
 			questions.set(p, temp);        //Swapping the elements
 		}
 	}
-	
-	public void addQuestion(Question question) {
-		questions.add(question);
-	}
-
 }

@@ -26,6 +26,10 @@
             android:name="thompson.eric.activity.CreateNewSetActivity"
             android:label="@string/title_activity_create_new_set" >
         </activity>
+        <activity
+            android:name="thompson.eric.activity.StudyActivity"
+            android:label="@string/title_activity_study" >
+        </activity>
     </application>
 
 </manifest>

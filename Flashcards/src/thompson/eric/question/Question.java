@@ -1,6 +1,8 @@
 package thompson.eric.question;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
 	
 	private String answer;
 	private String question;
@@ -17,5 +19,4 @@ public class Question {
 	public String getQuestion() {
 		return question;
 	}
-
 }
