@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 		
 		//XML
 		PreferenceManager.setDefaultValues(this, R.layout.initial_prefs, false);
-		SharedPreferences prefs = this.getSharedPreferences("master_exercise_list", Context.MODE_PRIVATE);
+		SharedPreferences prefs = this.getSharedPreferences("master_questionset_list", Context.MODE_PRIVATE);
 		String check = prefs.getString("PreferenceExist", "notExist");
 		if(check.equals("notExist")){
 			SharedPreferences.Editor editor = prefs.edit();
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 		final ArrayList<String> questionSetNames = new ArrayList<String>();
 		questionSetNames.add("Create New Set...");
 
-		// Create ArrayAdapter using the workout list.
+		// Create ArrayAdapter using the QuestionSet list.
 		listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, questionSetNames);
 
 		// Set the ArrayAdapter as the ListView's adapter.
